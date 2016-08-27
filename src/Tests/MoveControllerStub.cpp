@@ -18,3 +18,6 @@ bool MoveControllerStub::isInitialized() const { return initialized; }
 Sprite *MoveControllerStub::initSprite() const { return new cocos2d::Sprite(); }
 void MoveControllerStub::initPathFinding() {/*stubbed TMX stuff*/}
 void MoveControllerStub::registerSceneUpdateCallback() {/*stubbed TMX stuff*/}
+void MoveControllerStub::onUpdate(float d) {
+  tsg::move::MoveController::onUpdate(d);
+}

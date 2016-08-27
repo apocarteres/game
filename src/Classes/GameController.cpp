@@ -44,8 +44,13 @@ void tsg::game::GameController::init() {
   registerListener(mapController);
   registerListener(moveController);
   registerListener(lobbyController);
-  for_each(listeners.begin(), listeners.end(),
-           [](IGameEventListener *l) { l->onInit(); });
+  for_each(
+        listeners.begin(),
+        listeners.end(),
+        [](IGameEventListener *l) {
+            l->onInit();
+        }
+  );
 }
 
 tsg::map::MapController *tsg::game::GameController::getMapController() {

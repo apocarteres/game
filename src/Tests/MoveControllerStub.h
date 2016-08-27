@@ -35,6 +35,8 @@ class MoveControllerStub: public tsg::move::MoveController {
   void registerSceneUpdateCallback() override;
   void addObjectGroup(string, TMXObjectGroup *);
   void addWaterTile(const Vec2, Sprite *);
+  void onUpdate(float) override;
+
 };
 
 #endif //SRC_MOVECONTROLLERSTUB_H

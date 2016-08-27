@@ -9,6 +9,8 @@
 #include "TMXPathFinding.h"
 #include "cocos2d.h"
 
+#include <chrono>
+
 namespace tsg {
 namespace move {
 
@@ -34,6 +36,7 @@ class MoveController:
   std::map<string, GameCharacter *> characters;
   TMXPathFinding *pathFinding;
   std::vector<int> roadTiles;
+  std::chrono::time_point<std::chrono::system_clock> lastMoveTime;
 
   virtual Size calcTileSize() const;
   virtual TMXObjectGroup *findSpawnObject(const string &) const;
@@ -47,6 +50,10 @@ class MoveController:
   Vec2 convertNodeToGridPosition(const Vec2 &) const;
   virtual Vec2 findObjectNodePosition(const string &, const string &) const;
   virtual Vec2 findObjectGridPosition(const string &, const string &) const;
+  virtual Action *loadAction(
+                             int frames,
+                             const std::string &fileName,
+                             const Size &size) const;
 
   void onMapLoad(TMXTiledMap *) override;
   void onInit() override;

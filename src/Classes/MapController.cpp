@@ -45,7 +45,7 @@ void MapController::notifyListeners() {
 }
 
 void MapController::onStartGame() {
-  loadMap("data/map1.tmx");
+  loadMap("data/level/swamp/map.tmx");
 }
 
 bool MapController::onTouchBegan(cocos2d::Touch *) {

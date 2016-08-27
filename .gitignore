@@ -44,3 +44,5 @@ cmake_install.cmake
 *.exe
 *.out
 *.app
+/TemplatesDemo/build/
+/TemplatesDemo/dist/

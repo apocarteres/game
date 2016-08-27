@@ -36,7 +36,7 @@ void MoveController::onMapLoad(TMXTiledMap *map) {
   registerSceneUpdateCallback();
 }
 void MoveController::initPathFinding() {
-  pathFinding = new TMXPathFinding(map, TMXPathFinding::FOUR);
+  pathFinding = new TMXPathFinding(map, TMXPathFinding::EIGHT);
   pathFinding->setTileLayers({"road"});
   for (int i = 0; i < 128; ++i) {
     for (int j = 0; j < 128; ++j) {
@@ -56,7 +56,19 @@ void MoveController::registerSceneUpdateCallback() {
 }
 
 void MoveController::onUpdate(float delta) {
-  std::cout << "delta " << delta << std::endl;
+//    for (auto it = characters.begin(); it != characters.end(); ++it) {
+//        auto character = it->second;
+//        character->calcHeading()
+//    
+//    }
+//  auto now = std::chrono::system_clock::now();
+//  std::chrono::duration<double, std::ratio<1>> duration = now - lastMoveTime;
+//  if (duration.count() > 1000) {
+//    lastMoveTime = now;
+//    std::cout << "up" << std::endl;
+//  }
+//
+
 }
 
 TMXObjectGroup *MoveController::findSpawnObject(const string &layer) const {
@@ -76,25 +88,36 @@ void MoveController::respawnCharacter(string &name) {
 //  gameController->getMapController()->lookAt(findWaterTile(Vec2(0, 0))->getPosition());
 }
 
-Sprite *MoveController::initSprite() const {
+Action *MoveController::loadAction(
+                                   int frames,
+                                   const std::string &fileName,
+                                   const Size &size) const {
+    Vector<SpriteFrame *> animFrames(frames);
+    for (int i = 0; i < frames; ++i) {
+        auto frame = cocos2d::SpriteFrame::create(
+            fileName,
+            cocos2d::Rect(i * size.width, 0, size.width, size.height),
+            false,
+            Vec2::ZERO,
+            size
+        );
+        animFrames.pushBack(frame);
+    }
+    auto animation = cocos2d::Animation::createWithSpriteFrames(animFrames, 0.1f);
+    auto animate = cocos2d::Animate::create(animation);
+    return cocos2d::RepeatForever::create(animate);    
+}
 
+Sprite *MoveController::initSprite() const {
   auto sprite = Sprite::create();
-  //todo read animation from config
-  Vector<SpriteFrame *> animFrames(10);
-  for (int i = 0; i < 10; ++i) {
-    auto frame = cocos2d::SpriteFrame::create(
-        "data/characters/knight/IDLE/0.png",
-        cocos2d::Rect(i * 67, 0, 67, 137),
-        false,
-        Vec2::ZERO,
-        Size(Vec2(67, 137)));
-    animFrames.pushBack(frame);
-  }
-  auto animation = cocos2d::Animation::createWithSpriteFrames(animFrames, 0.1f);
-  auto animate = cocos2d::Animate::create(animation);
-  auto repeatAnimate = cocos2d::RepeatForever::create(animate);
-  sprite->runAction(repeatAnimate);
+  auto action = loadAction(
+    10,
+    "data/characters/knight/IDLE/0.png",
+    Size(Vec2(67, 137))
+  );
+  sprite->runAction(action);
   map->addChild(sprite);
+  sprite->setScale(0.8f);
   return sprite;
 }
 
@@ -164,6 +187,7 @@ void MoveController::onStartGame() {
       sprite->setPosition(item + s);
       sprite->setLocalZOrder(100);
     }
+//    scheduleMoving("player", path.back());
     return true;
   };
   cocos2d::Director::getInstance()

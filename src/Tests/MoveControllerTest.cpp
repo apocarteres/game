@@ -24,8 +24,8 @@ class MapControllerStub: public tsg::map::MapController {
   std::map<const Vec2, int> lookAtCalls;
  public:
   int lookAtTimes(const Vec2) const;
-  virtual void lookAt(Vec2) override;
-  virtual void loadMapFromFile(const string &) { }
+  void lookAt(Vec2) override;
+  void loadMapFromFile(const string &) { }
 };
 
 //=============================8<==================================
@@ -44,6 +44,11 @@ void MapControllerStub::lookAt(Vec2 v) {
     lookAtCalls[v] = 1;
   }
 }
+
+//void MapControllerStub::onUpdate(float d) {
+//  tsg::map::MapController::onUpdate(d);
+//}
+
 
 //================================8<=======================================
 
@@ -84,4 +89,34 @@ TEST_CASE("That player spawns well in spawn point and map is scrolled to spawn p
   REQUIRE(moveControllerStub.getPlayerSpawn() == spawnPointWorld);
   REQUIRE(moveControllerStub.getPlayerPosition() == moveControllerStub.getPlayerSpawn());
   REQUIRE(mapControllerStub.lookAtTimes(spawnPointWorld) == 1);
+}
+
+TEST_CASE("That point changes on each tick",
+          "[MoveController]") {
+ //1 step = 10 points
+  //1 game second = 1 step
+
+  Sprite zeroPointSpriteStub;
+  Sprite spawnSpriteStub;
+  MapControllerStub mapControllerStub;
+  MoveControllerStub moveControllerStub;
+  string spawnLayer = "spawn point";
+  auto gameController = tsg::game::GameController::getInstance();
+  auto zeroPointGrid = Vec2(0, 0);
+  auto zeroPointWorld = Vec2(1000.0f, 1000.0f);
+  auto spawnPointGrid = Vec2(4, 29);
+  auto spawnPointWorld = Vec2(100, 100);
+  auto group = mkObjectGroup(Vec2(100, 100));
+  moveControllerStub.addObjectGroup(spawnLayer, &group);
+  moveControllerStub.addWaterTile(zeroPointGrid, &zeroPointSpriteStub);
+  moveControllerStub.addWaterTile(spawnPointGrid, &spawnSpriteStub);
+
+  gameController->injectControllers(&moveControllerStub, &mapControllerStub, nullptr, nullptr);
+  zeroPointSpriteStub.setPosition(zeroPointWorld);
+  spawnSpriteStub.setPosition(spawnPointWorld);
+
+  moveControllerStub.onMapLoad(nullptr);
+  moveControllerStub.onUpdate(1);
+
+
 }

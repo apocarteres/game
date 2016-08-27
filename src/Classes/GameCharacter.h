@@ -19,6 +19,7 @@ class GameCharacter {
   virtual Sprite *getSprite();
   virtual const Vec2 &getSpawn() const;
   virtual const Vec2 &getTarget() const;
+  virtual const Vec2 calcHeading() const;
 };
 
 #endif //SRC_GAMECHARACTER_H

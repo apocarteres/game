@@ -26,3 +26,10 @@ const Vec2 &GameCharacter::getSpawn() const {
 const Vec2 &GameCharacter::getTarget() const {
   return target;
 }
+
+const Vec2 GameCharacter::calcHeading() const {
+    assert(target != nullptr);
+    auto result = cocos2d::Vec2(target - sprite->getPosition());
+    result.normalize();
+    return result;
+}
